@@ -77,5 +77,38 @@ def topMatches(prefs,person,n=5,similarity=sim_pearson):
  scores.sort()
  scores.reverse()
  return scores[0:n]
-print (topMatches(critics,'Lisa Rose',3,sim_distance))
-print (topMatches(critics,'Lisa Rose',3,sim_pearson))
+# print (topMatches(critics,'Lisa Rose',3,sim_distance))
+# print (topMatches(critics,'Lisa Rose',3,sim_pearson))
+
+# *****Recommending item
+def getRecommendations(prefs,person,similarity=sim_pearson):
+    #Get recommendation for a person by using a weighted average of every other user's ranking
+    total={}
+    simSums={}
+    for other in prefs:
+        #don't compare to myself
+        if other == person: continue
+        
+        #find the simlarity pearson coefficient
+        sim = similarity(critics,other,person)
+
+        #ingnore scores of zero or lower
+        if sim <= 0: continue
+        
+        #find all movie other watched
+        for movie in prefs[other]:
+            #dont recommend the movie was viewed
+            if movie in prefs[person]: continue
+            #Caculate the rating * similarity
+            total.setdefault(movie,0)
+            total[movie]+=sim*prefs[other][movie]
+            #Caculator the total simlarity
+            simSums.setdefault(movie,0)
+            simSums[movie] += sim
+    rankings=[(total/simSums[movie],movie) for movie,total in total.items()]
+    # Return the sorted list
+    rankings.sort()
+    rankings.reverse()
+    return rankings
+print getRecommendations(critics,'Toby',sim_distance)
+# print critics
