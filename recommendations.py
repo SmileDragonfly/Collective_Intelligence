@@ -42,32 +42,32 @@ def sim_distance(prefs,person1,person2):
 # Return the pearson correlation coefficient for p1 and p2
 def sim_pearson(prefs,p1,p2):
  # Get the list of mutually rated item
- si={}
- for item in prefs[p1]:
-  if item in prefs[p2]:
-   si[item]=1
- # Find the number of elements
- n=len(si)
+    si={}
+    for item in prefs[p1]:
+        if item in prefs[p2]:
+            si[item]=1
+    # Find the number of elements
+    n=len(si)
  
- # if they are no rating in common, return 0
- if n==0: return 0
+    # if they are no rating in common, return 0
+    if n==0: return 0
  
- # Add up all the preferences
- sum1=sum(prefs[p1][item] for item in si)
- sum2=sum(prefs[p2][item] for item in si)
+    # Add up all the preferences
+    sum1=sum(prefs[p1][item] for item in si)
+    sum2=sum(prefs[p2][item] for item in si)
  
- # Sum up the squares
- sum1Sq=sum(pow(prefs[p1][item],2) for item in si)
- sum2Sq=sum(pow(prefs[p2][item],2) for item in si)
+    # Sum up the squares
+    sum1Sq=sum(pow(prefs[p1][item],2) for item in si)
+    sum2Sq=sum(pow(prefs[p2][item],2) for item in si)
  
- # Sum up the products
- pSum=sum(prefs[p1][item]*prefs[p2][item] for item in si)
+    # Sum up the products
+    pSum=sum(prefs[p1][item]*prefs[p2][item] for item in si)
  
- #Caculate Pearson Score
- num=pSum-(sum1*sum2/n)
- den=sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
- r=num/den
- return r
+    # Caculate Pearson Score
+    num=pSum-(sum1*sum2/n)
+    den=sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
+    r=num/den
+    return r
 # print (sim_pearson(critics,'Lisa Rose','Gene Seymour'))
 
 
@@ -90,7 +90,7 @@ def getRecommendations(prefs,person,similarity=sim_pearson):
         if other == person: continue
         
         #find the simlarity pearson coefficient
-        sim = similarity(critics,other,person)
+        sim = similarity(prefs,person,other)
 
         #ingnore scores of zero or lower
         if sim <= 0: continue
@@ -110,5 +110,53 @@ def getRecommendations(prefs,person,similarity=sim_pearson):
     rankings.sort()
     rankings.reverse()
     return rankings
-print getRecommendations(critics,'Toby',sim_distance)
+# print getRecommendations(critics,'Toby',sim_distance)
 # print critics
+
+# *****Matching Product
+def transformPrefs(prefs):
+    result = {}
+    for person in prefs:
+        for item in prefs[person]:
+            result.setdefault(item,{})
+            #Flip item and person
+            result[item][person] = prefs[person][item]
+    return result
+
+# movie = transformPrefs(critics)
+# print movie
+# print movie['Lady in the Water']
+# print topMatches(movie,'Superman Returns')
+# print getRecommendations(movie,'Just My Luck')
+
+# *****Item-Based Filtering - Building the item comparison Dataset
+def caculateSimilarItem(prefs,n=10):
+    # Create a dictionary of items showing which other item they are most similar to
+    result={} #dictionary
+
+    # Invert the preference matrix to be item-centric
+    itemPrefs = transformPrefs(prefs)
+    # this variable use to update status of the build dataset operation
+    c = 0
+    for item in itemPrefs:
+        c += 1
+        if c%100 == 0: print "%d/%d" % (c,len(itemPrefs))
+        # Find the most similar item to this one
+        scores = topMatches(itemPrefs,item,n=n,similarity=sim_distance)
+        result[item] = scores
+    return result
+
+# top = topMatches(critics,'Toby')
+# print top
+# print top[0]
+# print caculateSimilarItem(critics)
+
+# *****Item-based Filtering - Getting Recommendations
+def getRecommendedItems(prefs,itemMatch,user):
+    userRatings = prefs[user]
+    scores = {}
+    totalSim = {}
+    # Loop over items rated by this user
+    for item in userRatings:
+        
+
