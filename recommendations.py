@@ -150,6 +150,8 @@ def caculateSimilarItem(prefs,n=10):
 # print top
 # print top[0]
 # print caculateSimilarItem(critics)
+# print critics['Lisa Rose'].items()
+
 
 # *****Item-based Filtering - Getting Recommendations
 def getRecommendedItems(prefs,itemMatch,user):
@@ -157,6 +159,18 @@ def getRecommendedItems(prefs,itemMatch,user):
     scores = {}
     totalSim = {}
     # Loop over items rated by this user
-    for item in userRatings:
-        
+    for useritem in userRatings:
+        for (similarity,item) in itemMatch[useritem]:
+            if item in userRatings: continue
+            scores.setdefault(item,0)
+            scores[item] += similarity * userRatings[useritem]
+            totalSim.setdefault(item,0)
+            totalSim[item] += similarity
+    # Devide each total score by total weighting to get average
+    rankings = [(scores/totalSim[item],item) for item,scores in scores.items()]
+    # Return the rankings from the highest to lowest
+    rankings.sort()
+    rankings.reverse()
+    return rankings
+print getRecommendedItems(critics,caculateSimilarItem(critics),'Toby')
 
