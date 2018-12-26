@@ -66,6 +66,7 @@ def sim_pearson(prefs,p1,p2):
     # Caculate Pearson Score
     num=pSum-(sum1*sum2/n)
     den=sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
+    if den == 0: return 0
     r=num/den
     return r
 # print (sim_pearson(critics,'Lisa Rose','Gene Seymour'))
@@ -172,5 +173,25 @@ def getRecommendedItems(prefs,itemMatch,user):
     rankings.sort()
     rankings.reverse()
     return rankings
-print getRecommendedItems(critics,caculateSimilarItem(critics),'Toby')
+# print getRecommendedItems(critics,caculateSimilarItem(critics),'Toby')
 
+# *****Using the MovieLens Dataset
+def loadMovieLens(path = 'F:/PythonProject/Collective_Intelligence/Data/MovieLens/ml-100k'):
+    # Get the movie titles
+    movies = {}
+    for line in open(path+'/u.item'):
+        (id,title) = line.split('|')[0:2]
+        movies[id] = title
+    # Load data
+    prefs = {}
+    for line in open(path+'/u.data'):
+        (user,movieid,rating,ts) = line.split('\t')
+        prefs.setdefault(user,{})
+        prefs[user][movies[movieid]] = float(rating)
+    return prefs
+prefs = loadMovieLens()
+# print prefs['87']
+# recomend = getRecommendations(prefs,'87')[0:30]
+# print recomend
+itemsim = caculateSimilarItem(prefs,n=50)
+print getRecommendedItems(prefs,itemsim,'87')[0:30]
