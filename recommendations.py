@@ -193,5 +193,5 @@ prefs = loadMovieLens()
 # print prefs['87']
 # recomend = getRecommendations(prefs,'87')[0:30]
 # print recomend
-itemsim = caculateSimilarItem(prefs,n=50)
-print getRecommendedItems(prefs,itemsim,'87')[0:30]
+# itemsim = caculateSimilarItem(prefs,n=50)
+# print getRecommendedItems(prefs,itemsim,'87')[0:30]
