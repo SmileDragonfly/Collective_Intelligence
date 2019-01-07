@@ -21,16 +21,18 @@ def getWordCounts(url):
         if 'summary' in e: summary = e.summary
         else: summary  = e.description
         # Extract a list of words
-        # words = getwords(e.title' ' + summary)
+        words = getwords(e.title +' ' + summary)
         for word in words:
             wc.setdefault(word,0)
             wc[word] += 1
     return d.feed.title,wc
 
 # print d['feed']['title']
-d = feedparser.parse('https://www.24h.com.vn/bong-da/mu-ruc-ro-rashford-tai-hien-sieu-tuyet-ki-ronaldinho-pogba-lap-cong-c48a1017532.html')
-print d
-str = json.dumps(d.feed)
-fh = open('RSSfile/RSSparse.xml','w+')
-fh.write(str)
+# d = feedparser.parse('https://www.24h.com.vn/bong-da/mu-ruc-ro-rashford-tai-hien-sieu-tuyet-ki-ronaldinho-pogba-lap-cong-c48a1017532.html')
+# print d.feed
+# str = json.dumps(d.feed)
+# fh = open('RSSfile/RSSparse.xml','w+')
+# fh.write(str)
+# 1/1/2019
+# Ignore this cause of can't get RSS, to be continue....
 

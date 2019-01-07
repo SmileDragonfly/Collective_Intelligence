@@ -32,9 +32,14 @@
 # print (released["iphone"])
 # import pydelicious
 # pydelicious.get_popular(tag="programming")
-from math import sqrt
-print sqrt(3)
+# from math import sqrt
+# print sqrt(3)
 # get all built-in library
-import sys
-a=sys.builtin_module_names
-print a
+# import sys
+# a=sys.builtin_module_names
+# print a
+B = [3,4]
+A = {1,2}
+print(A)
+A = set(B)
+print A
